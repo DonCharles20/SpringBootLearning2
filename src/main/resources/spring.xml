@@ -1,0 +1,79 @@
+<!--In this extensible markup lanage, this will help understand how the springboot works behind the scenes -->
+<!--This is the IOC where spring will manage the lifecyle of objects-->
+<!-- the definition for it is important or else the compiler will not know what the tag is for -->
+<!-- Beans is a tag, A place where spring Framework can manage objects can have multiple 'bean's within 'beans'-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--Label the class name that you want spring to manage. The id is a varible name, any name can be used to refrence it.-->
+    <bean id="setterDev" class="com.don.Dev">
+        <!--This calls the constructor of the class and creates the object-->
+        <!--Property is a built in tag in spring-->
+        <!-- this iss create the object along with age being 12-->
+        <!--This is setter injection-->
+        <property name ="age" value="12"></property><!--make sure that the class has setters and getters for the object you want to affect-->
+        <!-- This is used to affect a class specfic varible using name-->
+        <property name ="comp" ref="lap1"></property>
+    </bean>
+
+    <!--This is what constuctor injection looks like-->
+    <bean id="constructorDev" class="com.don.Dev">
+        <constructor-arg value="14"/>
+        <!--Since the constrctor in Dev class only has one parameter,
+     it does not need to be specfied unless 
+     there are multiple parameters or multiple constrcutors with one paramter-->
+        <constructor-arg name="age" value="14"/>
+        <!--This is what specfiying constrcutors would look like-->
+    </bean>
+
+    <bean id="constructorDev2" class="com.don.Dev">
+        <!--in the case of a constrcutor having multiple parameters specify index you want to affect, you can also use name instead-->
+        <constructor-arg index="0" value="20"/>
+        <constructor-arg index="1" value="2000"/>
+    </bean>
+
+    <!--This is a bean that is being used in the Dev class-->
+    <!--this is used as a refrence for Laptop or Desktop-->
+    <!--Since Computer is an interface you cannot refrence it-->
+    <bean id="lap1" class="com.don.Laptop"></bean>
+
+    <!--This is a bean with primary and being wired by type-->
+    <!--this bean also has the same id as the one in the dev class-->
+    <bean id="comp" class="com.don.Desktop" primary="true"></bean>
+
+    <bean id="laptopDev" class="com.don.Dev">
+        <property name ="comp" ref="lap1"></property><!--This is how you refrence a bean throgh setter injection, 
+        in the event that a primitave value is not being used-->
+        <!-- <constructor-arg ref="lap1"/>-->  <!-- This is how you refrence a bean throgh constructor injection -->
+    
+    </bean>
+
+    <!--There are diffrent ways to autowire By Name, byType, byConstrcutor, and by annotation-->
+    
+    <!--When using autowire="byName" make sure the name of the bean is 
+    the exact same as the name of the varible defined in the class-->
+    <!--make sure when autowire="byName" 
+    that multiple beans do not have the same name or the complier will get confused-->
+    <bean id="compDevName" class="com.don.Dev" autowire="byName"></bean>
+
+    <!--When using autowire="byType" make sure you do not have duplicates -->
+    <!--This is because the compiler will not know which one to use-->
+    <!--but if you are using duplicates make sure to use the primary="true"-->
+    <!--This will tell the compiler which one to use or has priority-->
+    <bean id="compDevType" class="com.don.Dev" autowire="byType"></bean> 
+
+    <!--This is how you autowire by constrcutor-->
+    <bean id="compDevConstructor" class="com.don.Dev" autowire="constructor"></bean>
+
+    <bean id="thisBean" class="com.don.Dev" autowire="byType"></bean>
+    
+
+</beans>
+<!--There are diffrent situations to use each injection
+Constructor Injection:
+Use when dependencies are mandatory and must be provided during object creation.
+Ideal for few dependencies and when immutability is required.
+
+Setter Injection:
+Use when dependencies are optional or might need to change after bean creation.
+Better for many dependencies for readability and flexibility.-->
